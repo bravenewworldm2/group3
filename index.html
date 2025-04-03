@@ -287,8 +287,8 @@
 
         function answerQuestion(choice) {
             let q = scenarios[currentScenario];
-            let selectedButton = document.getElementById(option${choice});
-            let correctButton = document.getElementById(option${q.match});
+            let selectedButton = document.getElementById(`option${choice}`);
+            let correctButton = document.getElementById(`option${q.match}`);
 
             if (choice === q.match) {
                 selectedButton.classList.add('correct-answer');
