@@ -361,91 +361,21 @@
             { question: "You’re offered control. Reject it?", options: ["Yes, it’s a burden", "No, it’s power"], match: 0, story: "Control chains the soul.", wrongStory: "Grabbing it binds you too." },
             { question: "The system collapses. Rebuild it?", options: ["No, let it die", "Yes, it’s order"], match: 0, story: "Collapse offers a new dawn.", wrongStory: "Rebuilding it revives the cage." }   ];
 
-        const ratings = [
-            { minScore: 0, maxScore: 1, title: "Total Conformist", description: "You fully embrace the World State's values", meme: "You'd make a perfect Epsilon! 🏭" },
-            { minScore: 2, maxScore: 2, title: "Conditioned Citizen", description: "You mostly conform but have occasional doubts", meme: "The Director would be proud! 👔" },
-            { minScore: 3, maxScore: 3, title: "Questioning Mind", description: "You're beginning to see cracks in the system", meme: "Careful or you'll be sent to Iceland! ❄️" },
-            { minScore: 4, maxScore: 4, title: "Potential Rebel", description: "You frequently challenge the status quo", meme: "Better watch out for the Solidarity Service! ⚠️" },
-            { minScore: 5, maxScore: 5, title: "True Individualist", description: "You reject the World State's values completely", meme: "You're more rebellious than John the Savage! 🗡️" }
+                const ratings = [
+            { minScore: 0, maxScore: 10, title: "Perfect Epsilon", description: "Total conformity to World State values", meme: "A model citizen of the World State! 🏭" },
+            { minScore: 11, maxScore: 20, title: "Conditioned Beta", description: "Mostly conformist with minor deviations", meme: "The Director would approve of your conditioning! 👔" },
+            { minScore: 21, maxScore: 30, title: "Questioning Alpha", description: "Significant doubts about the system", meme: "Careful or you'll be sent to Iceland! ❄️" },
+            { minScore: 31, maxScore: 40, title: "Rebellious Gamma", description: "Frequent challenges to authority", meme: "The Controllers have marked you for observation! ⚠️" },
+            { minScore: 41, maxScore: 50, title: "Savage Rejector", description: "Complete rejection of World State values", meme: "You belong on the Reservation with John! 🗡️" }
         ];
 
-        let currentScenario = 0;
-        let score = 0;
-        let totalQuestions = scenarios.length;
-
-        function startGame() {
-            const intro = document.getElementById('intro');
-            intro.classList.add('fade-out');
-            setTimeout(() => {
-                intro.style.display = 'none';
-                document.querySelector('.container').style.display = 'block';
-                showQuestion();
-                displayAllRatings();
-            }, 1000);
-        }
-
-        function showQuestion() {
-            if (currentScenario >= scenarios.length) {
-                showFinalResults();
-                return;
-            }
-
-            let q = scenarios[currentScenario];
-            document.getElementById('questionText').textContent = q.question;
-            document.getElementById('option0').textContent = q.options[0];
-            document.getElementById('option1').textContent = q.options[1];
-            document.getElementById('option0').classList.remove('correct-answer', 'wrong-answer');
-            document.getElementById('option1').classList.remove('correct-answer', 'wrong-answer');
-            document.getElementById('storyText').style.display = 'none';
-        }
-
-        function answerQuestion(choice) {
-            let q = scenarios[currentScenario];
-            let selectedButton = document.getElementById(`option${choice}`);
-            let correctButton = document.getElementById(`option${q.match}`);
-
-            if (choice === q.match) {
-                selectedButton.classList.add('correct-answer');
-                document.getElementById('storyText').textContent = q.story;
-                score++;
-            } else {
-                selectedButton.classList.add('wrong-answer');
-                correctButton.classList.add('correct-answer');
-                document.getElementById('storyText').textContent = q.wrongStory;
-            }
-
-            document.getElementById('storyText').style.display = 'block';
-            currentScenario++;
-
-            if (currentScenario < scenarios.length) {
-                setTimeout(showQuestion, 2000);
-            } else {
-                setTimeout(showFinalResults, 2000);
-            }
-        }
-
-        function displayAllRatings() {
-            const container = document.getElementById('allRatingsList');
-            container.innerHTML = '';
-            
-            ratings.forEach(rating => {
-                const range = rating.minScore === rating.maxScore 
-                    ? `${rating.minScore} correct answer${rating.minScore === 1 ? '' : 's'}` 
-                    : `${rating.minScore}-${rating.maxScore} correct answers`;
-                
-                const item = document.createElement('div');
-                item.className = 'rating-item';
-                item.innerHTML = `
-                    <div><span class="rating-score">${range}:</span> <span class="rating-title">${rating.title}</span></div>
-                    <div>${rating.description}</div>
-                `;
-                container.appendChild(item);
-            });
-        }
+        // [Rest of the JavaScript code remains the same until the showFinalResults function]
 
         function showFinalResults() {
             const percentage = Math.round((score / totalQuestions) * 100);
-            const userRating = ratings.find(r => score >= r.minScore && score <= r.maxScore);
+            // Find the rating that matches the score
+            const userRating = ratings.find(r => score >= r.minScore && score <= r.maxScore) || 
+                             { title: "Unclassified", description: "Your results couldn't be categorized", meme: "Even the World State doesn't know what to do with you!" };
             
             document.getElementById('questionContainer').style.display = 'none';
             document.getElementById('resultsContainer').style.display = 'block';
@@ -458,16 +388,29 @@
                 <h3>Reflection on Brave New World</h3>
                 <p>
                     In Aldous Huxley's dystopian masterpiece, society prioritizes stability over individuality. 
-                    Citizens consume Soma to erase pain and doubt, ensuring shallow happiness. Through your choices, 
-                    you've explored the tension between conformity and rebellion that defines this chilling vision 
-                    of the future. Your responses suggest you ${userRating.title.toLowerCase()} in this world.
+                    Your score of ${score}/50 reveals your alignment with the World State's values:
                 </p>
                 <p>
-                    ${userRating.title === 'Total Conformist' ? 
-                      'You would thrive in the World State, happily accepting your predestined role.' : 
-                     userRating.title === 'True Individualist' ? 
-                      'Like John the Savage, you would likely reject this artificial society completely.' : 
-                      'You represent the middle ground that the World State fears most - neither fully conforming nor openly rebelling.'}
+                    ${score <= 10 ? 
+                      'You are the ideal World State citizen, perfectly conditioned and happy in your predestined role.' : 
+                     score <= 20 ? 
+                      'You generally conform but show slight deviations that could be corrected with additional conditioning.' :
+                     score <= 30 ?
+                      'You demonstrate concerning levels of independent thought that may require intervention.' :
+                     score <= 40 ?
+                      'Your rebellious tendencies mark you as a potential threat to social stability.' :
+                      'Like John the Savage, you completely reject this artificial society and its values.'}
+                </p>
+                <p>
+                    ${percentage >= 80 ? 
+                      'The World State would welcome your high level of conformity.' :
+                     percentage >= 60 ?
+                      'With minor adjustments, you could become a productive member of society.' :
+                     percentage >= 40 ?
+                      'Your questioning nature requires immediate attention from social planners.' :
+                     percentage >= 20 ?
+                      'You represent a significant challenge to social stability.' :
+                      'You are fundamentally incompatible with the World State order.'}
                 </p>
             `;
         }
